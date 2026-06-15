@@ -39,6 +39,33 @@ Build a backend service that manages stateful timers.
 **Task:** Before you write any code, you must design the logic flow.
 **Deliverable:** A **Sequence Diagram** or **State Flowchart** embedded in your `README.md`.
 
+   Client          API Server            Timer System
+  |                 |                      |
+  | POST /monitors  |                      |
+  |---------------> |                      |
+  |                 | create monitor       |
+  |                 | start 60s timer      |
+  |                 |--------------------->|
+  |                 |                      |
+  |<--------------- | 201 Created          |
+  |                 |                      |
+  |                 |                      |
+  | POST heartbeat  |                      |
+  |---------------> |                      |
+  |                 | reset timer          |
+  |                 | stop old timer       |
+  |                 | start new timer      |
+  |                 |--------------------->|
+  |<--------------- | 200 OK               |
+  |                 |                      |
+  |                 |                      |
+  |   (no heartbeat received)              |
+  |                 |                      |
+  |                 | timer expires        |
+  |                 |--------------------->|
+  |                 | trigger ALERT        |
+  |                 | console.log alert    | 
+
 ---
 
 ## 5. User Stories & Acceptance Criteria
