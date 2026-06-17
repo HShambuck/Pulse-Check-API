@@ -6,23 +6,23 @@ POST http://localhost:8383/monitors
 Content-Type: application/json
 
 {
-  "id": "device-2",
+  "id": "device-3",
   "timeout": 60,
   "alert_email": "admin@critmon.com"
 }
 
 ### HEARTBEAT (RESET TIMER)
-POST http://localhost:8383/monitors/device-2/heartbeat
+POST http://localhost:8383/monitors/device-3/heartbeat
 
 ### PAUSE MONITOR
-POST http://localhost:8383/monitors/device-2/pause
+POST http://localhost:8383/monitors/device-3/pause
 
 ### HEARTBEAT AFTER PAUSE (SHOULD BE IGNORED)
-POST http://localhost:8383/monitors/device-2/heartbeat
+POST http://localhost:8383/monitors/device-3/heartbeat
 
 ### RESUME PAUSED MONITOR
-POST http://localhost:8383/monitors/device-2/resume
+POST http://localhost:8383/monitors/device-3/resume
 
 ### RESTART DOWN MONITOR
-POST http://localhost:8383/monitors/device-2/restart
+POST http://localhost:8383/monitors/device-3/restart
 

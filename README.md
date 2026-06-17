@@ -1,37 +1,33 @@
 # 1. Architecture Overview
 
 ## System Architecture
-    Client          API Server            Timer System
-    |                 |                      |
-    | POST /monitors  |                      |
-    |---------------> |                      |
-    |                 | create monitor       |
-    |                 | start 60s timer      |
-    |                 |--------------------->|
-    |                 |                      |
-    |<--------------- | 201 Created          |
-    |                 |                      |
-    |                 |                      |
-    | POST heartbeat  |                      |
-    |---------------> |                      |
-    |                 | reset timer          |
-    |                 | stop old timer       |
-    |                 | start new timer      |
-    |                 |--------------------->|
-    |<--------------- | 200 OK               |
-    |                 |                      |
-    |                 |                      |
-    |   (no heartbeat received)              |
-    |                 |                      |
-    |                 | timer expires        |
-    |                 |--------------------->|
-    |                 | trigger ALERT        |
-    |                 | console.log alert    | 
+Client          API Server            Timer System
+|                 |                      |
+| POST /monitors  |                      |
+|---------------> |                      |
+|                 | create monitor       |
+|                 | start countdown      |
+|                 |--------------------->|
+|<--------------- | 201 Created          |
+|                 |                      |
+| POST heartbeat  |                      |
+|---------------> | reset timer          |
+|                 | clear + restart      |
+|                 |--------------------->|
+|<--------------- | 200 OK               |
+|                 |                      |
+| (no heartbeat)  |                      |
+|                 | timer expires        |
+|                 |--------------------->|
+|                 | trigger ALERT        |
+|                 | console.log alert    |
 
-The system is a stateful monitoring service combining:
-* SQLite (persistent state)
-* In-memory timers (runtime state)
-* Express API (control layer)
+## System Design
+
+The system is a stateful monitoring service built using:
+* SQLite → persistent state
+* In-memory timers → runtime countdown logic
+* Express API → control layer
 
 ## Flow Diagram - Sequence Logic
 
@@ -137,7 +133,28 @@ Response:
 Returns all monitored devices with status and timeout.
 
 ### Improvement
-I added this endpoint to improve observability and debugging.
+This improves system observability by allowing administrators to:
+- View all devices
+- Debug failed monitors
+- Track system state in real time
+
+### POST /monitors/:id/resume
+Resumes a paused monitor and restarts its countdown timer.
+
+### Improvement
+This adds operational flexibility by allowing:
+- Maintenance mode recovery
+- Re-activation of paused devices without recreation
+- Seamless continuation of monitoring lifecycle
+
+### POST /monitors/:id/restart
+Restarts a device that previously entered a DOWN state.
+
+### Improvement
+This improves system resilience by allowing:
+- Recovery of failed devices without re-registration
+- Restarting monitoring lifecycle after failure
+- Better real-world simulation of device recovery workflows
 
 ---
 

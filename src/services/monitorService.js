@@ -1,9 +1,11 @@
 export function addMonitor(db, id, timeout, alert_email) {
-        const insertMonitor = db.prepare(`
-        INSERT INTO monitors(id, timeout, alert_email, status) VALUES(?, ?, ?, ?)
+    const now = new Date().toISOString();
+
+    const insertMonitor = db.prepare(`
+        INSERT INTO monitors(id, timeout, alert_email, status, created_at, updated_at) VALUES(?, ?, ?, ?, ?, ?)
     `);
     // Setting device status as active
-    insertMonitor.run(id, timeout, alert_email, "ACTIVE");
+    insertMonitor.run(id, timeout, alert_email, "ACTIVE", now, now);
 }
 
 export function getMonitor(db, id) {
@@ -19,11 +21,13 @@ export function getMonitor(db, id) {
 }
 
 export function getAllMonitors(db) {
-  return db.prepare(`
+    return db.prepare(`
     SELECT * FROM monitors
   `).all();
 }
 
 export function updateMonitor(db, id, state) {
-    db.prepare(`UPDATE monitors SET status = ? WHERE id = ?`).run(state, id);
+    const now = new Date().toISOString();
+
+    db.prepare(`UPDATE monitors SET status = ?, updated_at = ? WHERE id = ?`).run(state, now, id);
 }
