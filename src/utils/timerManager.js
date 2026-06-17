@@ -1,9 +1,10 @@
 export const timers = {};
 
-function startMonitorTimer(id, db, timeout) {
-  // cleartimeout if it already exist in timers
+export function startMonitorTimer(id, db, timeout) {
+  // 2. heartbeat logic: Stop old countdown
   if (timers[id]) clearTimeout(timers[id]);
 
+  // 3. Start fresh timer
   const timer = setTimeout(() => {
     // Send an alert after timeout
     console.log({
@@ -22,8 +23,6 @@ function startMonitorTimer(id, db, timeout) {
     delete timers[id];
   }, timeout * 1000);
 
-  // 3. Store timer reference
+  // 3. Store the timer reference in memory
   timers[id] = timer;
 }
-
-export default startMonitorTimer;
