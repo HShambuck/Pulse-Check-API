@@ -1,0 +1,28 @@
+### GET ALL MONITORS
+GET http://localhost:8383/monitors
+
+### CREATE MONITOR
+POST http://localhost:8383/monitors
+Content-Type: application/json
+
+{
+  "id": "device-2",
+  "timeout": 60,
+  "alert_email": "admin@critmon.com"
+}
+
+### HEARTBEAT (RESET TIMER)
+POST http://localhost:8383/monitors/device-2/heartbeat
+
+### PAUSE MONITOR
+POST http://localhost:8383/monitors/device-2/pause
+
+### HEARTBEAT AFTER PAUSE (SHOULD BE IGNORED)
+POST http://localhost:8383/monitors/device-2/heartbeat
+
+### RESUME PAUSED MONITOR
+POST http://localhost:8383/monitors/device-2/resume
+
+### RESTART DOWN MONITOR
+POST http://localhost:8383/monitors/device-2/restart
+

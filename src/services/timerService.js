@@ -1,6 +1,8 @@
+import { updateMonitor } from "./monitorService.js";
+
 export const timers = {};
 
-export function startMonitorTimer(id, db, timeout) {
+export function startMonitorTimer(db, id, timeout) {
   // 2. heartbeat logic: Stop old countdown
   if (timers[id]) clearTimeout(timers[id]);
 
@@ -13,11 +15,7 @@ export function startMonitorTimer(id, db, timeout) {
     });
 
     // update DB
-    db.prepare(
-      `
-            UPDATE monitors SET status = ? WHERE id = ?
-        `,
-    ).run("DOWN", id);
+    updateMonitor(db, id, "DOWN")
 
     //cleanup memory
     delete timers[id];
